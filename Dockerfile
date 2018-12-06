@@ -4,7 +4,6 @@ RUN apt-get update && apt-get install -y cmake && cmake --version
 RUN apt-get update && apt-get install -y git
 RUN apt-get update && apt-get install -y python2.7 python-pip
 RUN apt-get update && apt-get install -y python3
-
 RUN apt-get update && \
         apt-get install -y \
         build-essential \
