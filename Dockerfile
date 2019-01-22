@@ -1,9 +1,9 @@
 FROM nvidia/cuda:8.0-devel-ubuntu16.04
 
 RUN apt-get update && apt-get install -y cmake && cmake --version
-RUN apt-get install -y git
-RUN apt-get install -y python2.7 python-pip python3
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y python2.7 python-pip python3
+RUN apt-get update && apt-get install -y \
         build-essential \
         cmake \
         git \
@@ -21,6 +21,7 @@ RUN apt-get install -y \
         libavformat-dev \
         libpq-dev
 
+ADD requirements.txt . 
 RUN pip install -r requirements.txt
 WORKDIR /
 ENV OPENCV_VERSION="3.4.1"
