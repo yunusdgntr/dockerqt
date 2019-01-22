@@ -60,40 +60,39 @@ RUN wget http://dlib.net/files/dlib-19.8.zip \
 && cmake --build . \
 && cd ..  
 
-RUN apt-get install -y libboost-all-dev
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	cpio \
+
+
+# Install all OS dependencies
+RUN apt-get update && \
+        apt-get install -yq --no-install-recommends \
         build-essential \
+        libboost-all-dev \
         cmake \
         git \
         wget \
-        ssh \
-        openssh-server \
-        numactl \
-        vim \
-        net-tools \
-        iputils-ping \
-        screen \
-        libmlx4-1 libmlx5-1 ibutils  rdmacm-utils libibverbs1 ibverbs-utils perftest infiniband-diags \
-        openmpi-bin libopenmpi-dev \
-        ufw \
-        iptables \
-        libboost-all-dev \
-        libgflags-dev \
-        libgoogle-glog-dev \
-        libhdf5-serial-dev \
-        libleveldb-dev \
-        liblmdb-dev \
-        libopencv-dev \
-        libprotobuf-dev \
-        libsnappy-dev \
-        protobuf-compiler \
+        bzip2 \
+        sudo \
+        libsm6 \
+        libxext-dev \
+        libxrender1 \
+        lmodern \
+        pandoc \
         python-dev \
-        python-numpy \
-        python-pip \
-        python-setuptools \
-        python-scipy && \
-    rm -rf /var/lib/apt/lists/*
+        vim \
+        unzip \
+        wget \
+        yasm \
+        pkg-config \
+        libswscale-dev \
+        libtbb2 \
+        libtbb-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libtiff-dev \
+        libjasper-dev \
+        libavformat-dev \
+        libpq-dev \
+        && rm -rf /var/lib/apt/lists/*
 
 ENV CAFFE_ROOT=/opt/caffe
 WORKDIR $CAFFE_ROOT
