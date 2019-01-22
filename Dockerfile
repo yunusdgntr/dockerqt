@@ -1,11 +1,9 @@
 FROM nvidia/cuda:8.0-devel-ubuntu16.04
 
 RUN apt-get update && apt-get install -y cmake && cmake --version
-RUN apt-get update && apt-get install -y git
-RUN apt-get update && apt-get install -y python2.7 python-pip
-RUN apt-get update && apt-get install -y python3
-RUN apt-get update && \
-        apt-get install -y \
+RUN apt-get install -y git
+RUN apt-get install -y python2.7 python-pip python3
+RUN apt-get install -y \
         build-essential \
         cmake \
         git \
@@ -23,7 +21,7 @@ RUN apt-get update && \
         libavformat-dev \
         libpq-dev
 
-RUN pip install numpy
+RUN pip install -r requirements.txt
 WORKDIR /
 ENV OPENCV_VERSION="3.4.1"
 RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
@@ -63,7 +61,6 @@ RUN wget http://dlib.net/files/dlib-19.8.zip \
 && cd ..  
 
 RUN apt-get install -y libboost-all-dev
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	cpio \
         build-essential \
@@ -120,20 +117,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         protobuf-compiler \
         python-dev \
         python-numpy \
-        python-pip \
         python-setuptools \
         python-scipy && \
     rm -rf /var/lib/apt/lists/*
 
 ENV CAFFE_ROOT=/opt/caffe
 WORKDIR $CAFFE_ROOT
-
-# FIXME: use ARG instead of ENV once DockerHub supports this
-# https://github.com/docker/hub-feedback/issues/460
 ENV CLONE_TAG=1.0
-RUN pip install --upgrade pip
-RUN python -m pip install --upgrade --force setuptools
-RUN python -m pip install --upgrade --force pip
+
 RUN git clone https://github.com/BVLC/caffe.git . && \
     cd python && for req in $(cat requirements.txt) pydot; do pip install $req; done && cd .. && \
 #    git clone https://github.com/NVIDIA/nccl.git && cd nccl && make -j install && cd .. && rm -rf nccl && \
@@ -150,9 +141,6 @@ WORKDIR /workspace
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
-
-EXPOSE 10010
-
 RUN apt-get update && apt-get install -y libxcb-keysyms1-dev libxcb-image0-dev \
     libxcb-shm0-dev libxcb-icccm4-dev libxcb-sync0-dev libxcb-xfixes0-dev \
     libxcb-shape0-dev libxcb-randr0-dev libxcb-render-util0-dev \
@@ -161,13 +149,9 @@ RUN apt-get update && apt-get install -y libxcb-keysyms1-dev libxcb-image0-dev \
     xauth build-essential mesa-common-dev libglu1-mesa-dev libxkbcommon-dev \
     libxcb-xkb-dev libxslt1-dev libgstreamer-plugins-base0.10-dev wget
 
-# Download script
-RUN wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-RUN chmod +x ./qt-unified-linux-x64-online.run
-
 # Run installer as entrypoint
-ADD Qt ./Qt/
-RUN export LD_LIBRARY_PATH=/workspace/Qt/5.10.1/gcc_64/lib:$LD_LIBRARY_PATH
-
+# ADD Qt ./Qt/
+# RUN export LD_LIBRARY_PATH=/workspace/Qt/5.10.1/gcc_64/lib:$LD_LIBRARY_PATH
+EXPOSE 10010
 CMD ["/bin/bash"]
 
